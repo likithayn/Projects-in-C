@@ -1,0 +1,192 @@
+//  TIC TAC TOE //
+#include <stdio.h>
+void display_board(char * board)
+{   
+    printf(" %c | %c | %c \n" , board[1] ,  board[2] , board[3]);
+    
+    printf("-----------\n");
+    
+    printf(" %c | %c | %c \n" , board[4] ,  board[5] , board[6]);
+    
+    printf("-----------\n");
+    
+    printf(" %c | %c | %c \n" , board[7] ,  board[8] , board[9]);
+}   
+char player1_choice()
+{
+    char choice;
+    printf("Player 1  choose X or O \n");
+    scanf(" %c",&choice);
+    if(choice =='X'|| choice =='O'|| choice =='x'|| choice == 'o')
+    {
+        if (choice == 'X'|| choice == 'x')
+        {
+            return ('X');
+        }
+        return ('O');
+    }
+    printf(" \n !!! PLEASE CHOOSE EITHER  X OR O !!! \n\n ");
+    return(player1_choice());
+}
+char player2_choice(char player1)
+{
+    if(player1 =='X')
+    {
+        return 'O';
+    }
+    return 'X';
+}
+ int choose_turn(char player1)
+{ 
+    if(player1 == 'X')
+    {
+        return 1;
+    }
+    return 2;
+}
+int position_choice(char * board,int position)
+{
+    printf("enter the position (1-9)\n");
+    scanf("%d",&position);
+    if(position==1||position==2||position==3||position==4||position==5||position==6||position==7||position==8||position==9) 
+    {
+        if(board[position]=='\0')
+        {
+            return position;
+        }
+    }
+    printf("\n INVALID POSITION\n\n");    
+    position = position_choice(board,position);// if position is filled or invalid 
+}
+ int check_for_win(char * board,char mark)
+ {   
+     if((board[1] == mark && board[2] == mark && board[3] == mark) || // across the top
+        (board[4] == mark && board[5] == mark && board[6] == mark) || // across the middle
+        (board[7] == mark && board[8] == mark && board[9] == mark) || // across the bottom
+        (board[1] == mark && board[4] == mark && board[7] == mark) || // down the middle
+        (board[2] == mark && board[5] == mark && board[8] == mark) || // down the middle
+        (board[3] == mark && board[6] == mark && board[9] == mark) || //down the right side
+        (board[7] == mark && board[5] == mark && board[3] == mark) || // diagonal
+        (board[9] == mark && board[5] == mark && board[1] == mark)) // diagonal
+        {
+            return 1;
+        }
+    return 0;
+ } 
+ int board_full(char * board)
+ {
+    for(int i=1;i<=9;i++)
+    {
+        if(board[i]!='X'&&board[i]!='O') 
+        {
+            return 0;
+            
+        }
+        
+    }
+    return 1;
+}
+void play_game(char * board)
+{
+    int position,win,full;
+    char player1=player1_choice();
+    char player2=player2_choice(player1);
+    printf(" player 1 you have choosen  %c \n player 2 you have choosen  %c\n",player1,player2);
+    int turn=choose_turn(player1);
+    printf(" \n\t\tPLAYER  %d WILL START THE GAME \n\n",turn);
+    
+    
+    printf("\n \t\t\t\t !!! ALL THE BEST!!!\n \n \t\t\t\t *GAME START* \n\n");
+    for(int i=1;i<=9;i++)//reseting board
+    {
+        board[i]='\0';
+    }
+    
+        while(1)
+        {
+            if(turn==1)
+            {
+                display_board(board);
+                printf("player1 ");
+                position = position_choice(board,position);
+                board[position]=player1;//placing choice in position on board
+                
+                win=check_for_win(board, player1);//check if pattern found
+                if(win==1)
+                {
+                    display_board(board);
+                    printf("\n \t*!!!CONGRATUTLATIONS !!! PLAYER 1 HAS WON THE GAME !!!* \n\n");
+                    break;
+                }
+                else
+                {
+                   full=board_full(board);//checking if all positions are filled 
+                   if(full==1)
+                   {
+                        display_board(board);
+                        printf("\n \t**!!! THE GAME IS DRAW  !!!  BETTER LUCK NEXT TIME  !!!**\n\n");
+                        break;
+                   }
+                }
+                turn=2;
+            }   
+            else
+            { 
+                display_board(board);
+                printf("player2  ");
+                position = position_choice(board,position);
+                board[position]=player2;//placing choice in position on board
+            
+                win=check_for_win(board, player2);//check if pattern found
+                if(win==1)
+                {
+                    display_board(board);
+                    printf("\n \t*!!!CONGRATUTLATIONS !!! PLAYER 2 HAS WON THE GAME !!!* \n\n");
+                    break;
+                }
+                else
+                {
+                    full=board_full(board);//checking if all positions are filled 
+                    if(full==1)
+                    {
+                        display_board(board);//check if pattern found
+                        printf("\n \t*!!! THE GAME IS DRAW  !!!  BETTER LUCK NEXT TIME  !!!*\n\n");
+                        break;
+                    }
+                }
+                turn=1;
+            }  
+        }           
+    printf("\nDo you want to play again ?\n\n");
+    int replay;
+    printf("enter 1 to play\n");
+    scanf("%d",&replay);
+    if(replay==1)
+    {
+        play_game(board);
+    }
+    else
+    {
+        printf("\n\t!!! Ok Lets Play Next Time !!!\n");
+        return;
+    }
+}
+int main()
+{
+    char board[10];int game_start;
+    
+    printf("\n\t\t\t\t!!! WELCOME TO TIC TAC TOE !!!\n \n");
+    printf("\n\t!Are YOU READY TO PLAY!\n\n");
+    printf("enter 1 to start\n");
+    scanf(" %d",&game_start);
+    if(game_start==1)
+    {
+        play_game(board);
+    }
+    else
+    {
+        printf("\n\t!!! Ok Lets Play Next Time !!!\n");
+    }
+    
+    return 0;
+}
