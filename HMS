@@ -1,0 +1,264 @@
+
+
+//// HOSPITAL  MANAGEMENT  SYSTEM ////
+
+#include <stdio.h>
+#include<string.h>
+#include<stdlib.h>
+struct patient
+{
+    char pid[10];
+    char pname[20];
+    int page;
+    char pgender[10];
+    long int pphno;
+    char pemailid[20];
+    char pdisease[20];
+};
+typedef struct patient P;
+struct pnode
+{
+    P info;
+    struct pnode * link;
+};
+typedef struct pnode * PNODE;
+PNODE getpnode()
+{
+    PNODE x;
+    x=(PNODE)malloc(sizeof(struct pnode));
+    return x;
+}
+PNODE insert_pinfo(PNODE first, FILE * p)
+{
+    printf("\n\t\t\t\t\tENTER NEW PATIENT INFO \n\n\t\t\t\t\t");
+    {
+        PNODE temp=getpnode(),cur=first,prev=NULL;
+        temp->link=NULL;
+        printf("\n\t\t\t\t\tpatient id: ");
+        scanf("%s",(temp->info).pid);
+        printf("\n\t\t\t\t\tpatient name: ");
+        scanf("%s",(temp->info).pname);
+        printf("\n\t\t\t\t\tpatient age: ");
+        scanf("%d",&(temp->info).page);
+        printf("\n\t\t\t\t\tpatient gender: ");
+        scanf("%s",(temp->info).pgender);
+        printf("\n\t\t\t\t\tpatient phone number: ");
+        scanf("%ld",&(temp->info).pphno);
+        printf("\n\t\t\t\t\tpatient email id: ");
+        scanf("%s",(temp->info).pemailid);
+        printf("\n\t\t\t\t\tpatient disease: ");
+        scanf("%s",(temp->info).pdisease);
+        fseek(p,0,SEEK_END);
+        fprintf(p,"pid:%s   pname:%s   page:%d   pgender:%s   pphno:%ld   pemailid:%s   pdisease:%s\n",(temp->info).pid,(temp->info).pname,(temp->info).page,(temp->info).pgender,(temp->info).pphno,(temp->info).pemailid,(temp->info).pdisease);
+        if(first==NULL)
+        {
+            return temp;
+    
+        }
+        else
+        {
+        
+            while(cur!=NULL)
+            {
+                prev=cur;
+                cur=cur->link;
+            }
+            prev->link=temp;
+            return first;
+
+        }
+    
+    } 
+}
+PNODE search_modify(PNODE  first , FILE * p,char * id )
+{
+    PNODE cur=first,temp=getpnode();
+    int ch,mod;
+    if(first==NULL)
+    {
+        printf("\n\t\t\t\t\t\t PATIENT FILE EMPLTY \n\n");
+        return first;
+    }
+    while(cur!= NULL)
+    {
+        if(strcmp(id,(cur->info).pid)==0)
+        {
+            printf("\n\t\t\t\t\t\tPATIENT DETAILS\n");
+            printf("\n\tpid:%s   pname:%s   page:%d   pgender:%s  pphno:%ld   pemailid:%s   pdisease:%s\n",(cur->info).pid,(cur->info).pname,(cur->info).page,(cur->info).pgender,(cur->info).pphno,(cur->info).pemailid,(cur->info).pdisease);
+            printf("\n\t\t\t\t\t\tany details to be modified \n");
+            printf("\n\t\t\t\t\t\t1 if needed else 0\n\t\t\t\t\t\t\t");
+            scanf("%d",&mod);
+            if(mod==1)
+            {
+                while(1)
+                {
+                    printf("\n\t\t\t 1.name \t 2.age \t 3.gender \t 4.phone number \t 5.email id\n\t\t\t\t\t\t6.return to patient file\n");
+                    printf("\n\t\t\t\t\t\tenter the details to be modified\n\t\t\t\t\t\t\t");
+                    scanf("%d",&ch);
+                    switch(ch)
+                    {
+                        case 1:printf("\n\t\t\t\t\tenter  name: ");
+                               scanf("%s",(temp->info).pname);
+                               strcpy((cur->info).pname,(temp->info).pname);
+                               
+                               break;
+                        case 2:printf("\n\t\t\t\t\tenter age: ");
+                               scanf("%d",&((temp->info).page));
+                               (cur->info).page=(temp->info).page;
+                               break;
+                        case 3:printf("\n\t\t\t\t\tenter gender: ");
+                               scanf("%s",(temp->info).pgender);
+                               strcpy((cur->info).pgender,(temp->info).pgender);
+                               break;
+                        case 4:printf("\n\t\t\t\t\tenter phone number: ");
+                               scanf("%ld",&((temp->info).pphno));
+                               (cur->info).pphno=(temp->info).pphno;
+                               break;   
+                        case 5:printf("\n\t\t\t\t\tenter email id: ");
+                               scanf("%s",(temp->info).pemailid);
+                               strcpy((cur->info).pemailid,(temp->info).pemailid);
+                               break;
+                        case 6: return(first);
+                        default :printf("\n\t\t\t\t\t\t\tinvalid choice\n");
+                    }
+                
+                }
+            }
+            
+            return first; 
+        }
+        cur=cur->link;
+    }
+    printf("\n\n\t\t\t\t\t\t\tpatient id not found\n");
+
+    return first;
+}
+PNODE delete(PNODE first,FILE * p,char * id)
+{
+    
+    PNODE cur=first,prev=NULL;
+    if(first==NULL)
+    {
+        printf("\n\t\t\t\t\t\t PATIENT FILE EMPLTY \n");
+        return first;
+    }
+    if(strcmp(id,(first->info).pid)==0)
+    {
+        printf("\n\t\t\t\t\t\tdetails of deleted patient is\n");
+        //fscanf(P,"")
+       printf("\n\tpid:%s   pname:%s   page:%d   pgender:%s  pphno:%ld   pemailid:%s   pdisease:%s\n",(cur->info).pid,(cur->info).pname,(cur->info).page,(cur->info).pgender,(cur->info).pphno,(cur->info).pemailid,(cur->info).pdisease);
+        prev=cur->link;
+        free(first);
+        return prev;
+        
+    }
+    while(cur!=NULL)
+    {
+        if(strcmp(id,(cur->info).pid)==0)
+        {
+            printf("\n\t\t\t\t\t\tdetails of deleted patient is\n");
+            printf("\n\tpid:%s   pname:%s   page:%d   pgender:%s  pphno:%ld   pemailid:%s   pdisease:%s\n",(cur->info).pid,(cur->info).pname,(cur->info).page,(cur->info).pgender,(cur->info).pphno,(cur->info).pemailid,(cur->info).pdisease);
+            prev->link=cur->link;
+            free(cur);
+            return first;
+        }
+        prev=cur;
+        cur=cur->link;
+    }
+    printf("\n\n\t\t\t\t\t\t ENTER A VALID PATIENT ID\n");
+    return first;
+}
+void display(PNODE first,FILE * P)
+{
+    if(first==NULL)
+    {
+        printf("\n\t\t\t\t\t PATIENT FILE EMPLTY \n\n");
+        return;
+    }
+    PNODE cur=first;
+    while(cur!=NULL)
+    {
+        fprintf(P,"\n\tpid:%s   pname:%s   page:%d   pgender:%s  pphno:%ld   pemailid:%s   pdisease:%s\n",(cur->info).pid,(cur->info).pname,(cur->info).page,(cur->info).pgender,(cur->info).pphno,(cur->info).pemailid,(cur->info).pdisease);
+        cur=cur->link;
+    }
+    return ;
+}
+void patient_details()
+{
+    printf("\n\t\t\t\t\t\tPATIENT FILE\n\n");
+    FILE *p;
+    p=fopen("patient.txt","w+");
+    int ch;
+    char id[10];
+    PNODE first=NULL;
+    while(1)
+    {
+        printf("\n\t\t\t\t1.insert patient details\t2.search and modify patient details\n\t\t\t\t3.delete patient details\t4.display\n\t\t\t\t\t\t5.return to main\n ");
+        printf("\n\t\t\t\t\t\tenter the choice\n\n\t\t\t\t\t\t\t");
+        scanf("%d",&ch);
+        switch(ch)
+        {
+            case 1:first=insert_pinfo(first,p);
+                    break;
+            case 2:printf("\n\t\t\t\t\tenter the patient id :");
+                    scanf("%s",id);
+                   first=search_modify(first,p,id);
+                   break;
+            case 3:printf("\n\t\t\t\t\tenter patient id to be deleted :");
+                    scanf("%s",id);
+                    first=delete(first,p,id);
+                    break;
+            case 4:display(first,p);
+                    break;
+            case 5 :return ;
+            default :printf("\n\t\t\t\t\tINVALID CHOICE\n\n");
+        
+            
+        }
+    }
+    
+    
+}
+int main()
+{
+    int ch,flag;
+    char key[9], password[9]="hospital";
+    printf("\t\t\t\t\t _______________________________ \n");
+    printf("\n\t\t\t\t\t  HOSPITAL  MANAGEMENT  SYSTEM\n ");
+    printf("\t\t\t\t\t _______________________________ \n\n");
+    for(int i=1;i<=3;i++)
+    {
+        printf("\n\t\t\t\t\t\tENTER THE PASSWORD\n\t\t\t\t\t\t  ");
+        scanf("%s",key);
+        if(strcmp(key,password)==0)
+        {
+            flag=1;
+            break;
+        }
+        else
+        {
+            printf("\n\t\t\t\t\t\t \aWRONG PASSWORD\n\n\t\t\t\t\t\tChances left %d\n\n",(3-i));
+            flag=0;
+        }
+    }
+    if(!flag)
+    while(1)
+    printf("\a\a\a\a\a\a");
+        while(flag)
+        {
+            printf("\n\t\t\t\t\t  ENTER THE FILE TO BE ACCESSED\n\n");
+            printf("\n\t\t\t\t\t 1.patient record file\t2.exit\n\t\t\t\t\t\t\t ");
+            scanf("%d",&ch);
+            switch(ch)
+            {
+                case 1:patient_details();
+                    break;
+                case 2:exit(0);
+                default:printf("\n\t\t\t\t\tINVALID CHOICE\n\n");
+            }
+        }
+    return 0;
+}
+   
+    
+
